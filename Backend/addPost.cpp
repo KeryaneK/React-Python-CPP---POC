@@ -31,8 +31,6 @@ int main(int argc, char *argv[]) {
     std::string content = argv[2];
     std::string user_id = argv[3];
 
-    std::cout << content;
-
     sqlite3 *db;
     char *errMsg = 0;
     int rc = sqlite3_open("database.db", &db);
