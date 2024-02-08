@@ -23,7 +23,7 @@ const Login: React.FC<props> = ({ setUser }) => {
       return;
     }
     try {
-      const response = await fetch('http://localhost:5000/api/checkUser?login=' + login.current?.value + '&password=' + password.current?.value)
+      const response = await fetch('http://141.147.58.226/api/checkUser?login=' + login.current?.value + '&password=' + password.current?.value)
       if (!response.ok) {
         setMessage('Error while connecting to the API.');
         return;
@@ -56,7 +56,7 @@ const Login: React.FC<props> = ({ setUser }) => {
     }
 
     try {
-      const response = await fetch('http://localhost:5000/api/addUser?login=' + login.current?.value + '&password=' + password.current?.value)
+      const response = await fetch('http://141.147.58.226/api/addUser?login=' + login.current?.value + '&password=' + password.current?.value)
       if (!response.ok) {
         setMessage('Error while connecting to the API.');
         return;
@@ -93,12 +93,13 @@ const Login: React.FC<props> = ({ setUser }) => {
     <div className='flex flex-col h-screen items-center justify-center bg-sky-500 p-4'>
       <div className='flex flex-col px-8 py-4 bg-white rounded border border-slate-900/10 gap-2'>
         <p className='text-sm italic'>Login:</p>
-        <input ref={login} className='border rounded border-slate-900/10 p-1' type='text'/>
+        <input ref={login} className='outline-none focus:border-sky-500 border rounded border-slate-900/10 p-1' type='text'/>
         <p className='text-sm italic'>Password:</p>
-        <input ref={password} className='border rounded border-slate-900/10 p-1' type='password'/>
+        <input ref={password} className='outline-none focus:border-sky-500 border rounded border-slate-900/10 p-1' type='password'/>
         {isRegister && <> <p className='text-sm italic'>Re-type password:</p>
-        <input ref={rePassword} className='border rounded border-slate-900/10 p-1' type='password'/></>}
+        <input ref={rePassword} className='outline-none focus:border-sky-500 border rounded border-slate-900/10 p-1' type='password'/></>}
         {message != '' && <div><p className='w-full text-red-500 text-sm text-wrap'>{message}</p></div>}
+        <div className='border-b border-slate-900/10'/>
         <div className='flex flex-row items-center gap-2 justify-between'>
           {isRegister ? <>
           <button onClick={() => {registerUser();}} className='px-4 py-1 bg-sky-500 rounded text-white'>Register</button>

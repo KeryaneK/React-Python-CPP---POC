@@ -72,13 +72,17 @@ int main(int argc, char *argv[]) {
     } else {
         // Print the posts
         std::cout << "[";
-        for (const auto& post : posts) {
+        for (size_t i = 0; i < posts.size(); ++i) {
+            const auto& post = posts[i];
             std::cout << "{";
-            std::cout << "id:" << post.id << ",";
-            std::cout << "title:" << post.title << ",";
-            std::cout << "content:" << post.content << ",";
-            std::cout << "user:" << post.user;
-            std::cout << "},";
+            std::cout << "\"id\":" << post.id << ",";
+            std::cout << "\"title\":\"" << post.title << "\",";
+            std::cout << "\"content\":\"" << post.content << "\",";
+            std::cout << "\"user\":\"" << post.user;
+            std::cout << "\"}";
+            if (i != posts.size() -1) {
+                std::cout << ",";
+            }
         }
         std::cout << "]";
     }

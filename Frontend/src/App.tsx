@@ -27,8 +27,8 @@ function App() {
         :
         <>
           <Route path='/' element={<Mainpage/>}/>
-          <Route path='/addPost' element={<AddPost/>}/>
-          <Route path='/userPosts' element={<UserPosts/>}/>
+          <Route path='/addPost' element={<AddPost user={user}/>}/>
+          <Route path='/userPosts' element={<UserPosts user={user} />}/>
           <Route path='/login' element={<Navigate to='/'/>}/>
         </>
         }

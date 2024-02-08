@@ -1,6 +1,7 @@
 #include <iostream>
 #include "sqlite3.h"
 #include <string>
+#include <tuple>
 
 /*
 Gets:
@@ -13,24 +14,33 @@ NOT_OK
 ERROR
 */
 
-bool checkUser(sqlite3 *db, const std::string& login, const std::string& password) {
-    std::string sqlStatement = "SELECT password FROM users WHERE login = '" + login + "';";
+void checkUser(sqlite3 *db, const std::string& login, const std::string& password) {
+    std::string sqlStatement = "SELECT id, password FROM users WHERE login = '" + login + "';";
+    int id = -1; // Default value if not found
     std::string storedPassword;
+    std::tuple<std::string*, int*> userData(&storedPassword, &id);
     
     char *errMsg = nullptr;
     int rc = sqlite3_exec(db, sqlStatement.c_str(), [](void *data, int argc, char **argv, char **azColName) {
-        std::string *storedPassword = static_cast<std::string*>(data);
-        if (argc > 0 && argv[0])
-            *storedPassword = argv[0];
+        auto userData = *static_cast<std::tuple<std::string*, int*>*>(data);
+        if (argc > 0 && argv[1])
+            *std::get<0>(userData) = argv[1]; // Assign char* to std::string
+        if (argc > 1 && argv[0])
+            *std::get<1>(userData) = std::stoi(argv[0]);
         return SQLITE_OK;
-    }, &storedPassword, &errMsg);
+    }, &userData, &errMsg);
 
     if (rc != SQLITE_OK) {
         sqlite3_free(errMsg);
-        return false;
+        std::cout << "ERROR";
+        return;
     }
 
-    return storedPassword == password;
+    if (storedPassword == password) {
+        std::cout << id;
+    } else {
+        std::cout << "NOT_OK";
+    }
 }
 
 int main(int argc, char *argv[]) {
@@ -45,12 +55,7 @@ int main(int argc, char *argv[]) {
         return 1;
     }
 
-    if (checkUser(db, login, password)) {
-        std::cout << "OK";
-    }
-    else {
-        std::cout << "NOT_OK";
-    }
+    checkUser(db, login, password);
 
     sqlite3_close(db);
 
