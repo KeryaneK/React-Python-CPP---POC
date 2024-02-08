@@ -1,14 +1,37 @@
-import './App.css'
-import { Routes, Route } from "react-router-dom"
+import { useState } from 'react'
+import { Routes, Route, Navigate } from "react-router-dom"
+
+import AddPost from './components/AddPost/AddPost'
+import Login from './components/Login/Login'
+import Mainpage from './components/Mainpage/Mainpage'
+import Navbar from './components/Navbar/Navbar'
+import UserPosts from './components/UserPosts/UserPosts'
+
 
 function App() {
 
+  const [user, setUser] = useState({name: 'none', id: 0})
+
   return (
     <>
+      {user.name != 'none' ? <Navbar/> : <></>}
+
       <Routes>
-        <Route path='/' element={<></>}/>
-        <Route path='/addPost' element={<></>}/>
-        <Route path='/userPosts' element={<></>}/>
+        {user.name == 'none' ?
+        <>
+          <Route path='/' element={<Navigate to='/login'/>}/>
+          <Route path='/addPost' element={<Navigate to='/login'/>}/>
+          <Route path='/userPosts' element={<Navigate to='/login'/>}/>
+          <Route path='/login' element={<Login setUser={setUser} />}/>
+        </>
+        :
+        <>
+          <Route path='/' element={<Mainpage/>}/>
+          <Route path='/addPost' element={<AddPost/>}/>
+          <Route path='/userPosts' element={<UserPosts/>}/>
+          <Route path='/login' element={<Navigate to='/'/>}/>
+        </>
+        }
       </Routes>
     </>
   )
