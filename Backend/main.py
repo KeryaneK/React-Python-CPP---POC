@@ -17,11 +17,7 @@ def is_invalid_password(password):
         return True
     return False
 
-@app.route('/')
-def index():
-    return '404';
-
-@app.route('/addUser')
+@app.route('/api/addUser')
 def add_user():
     login = request.args.get('login')
     password = request.args.get('password')
@@ -41,7 +37,7 @@ def add_user():
 
     return 'ERROR'
 
-@app.route('/checkUser')
+@app.route('/api/checkUser')
 def check_user():
     login = request.args.get('login')
     password = request.args.get('password')
@@ -61,7 +57,7 @@ def check_user():
     
     return 'ERROR'
 
-@app.route('/addPost')
+@app.route('/api/addPost')
 def add_post():
     title = request.args.get('title')
     content = request.args.get('content')
@@ -75,7 +71,7 @@ def add_post():
 
     return 'ERROR'
 
-@app.route('/deletePost')
+@app.route('/api/deletePost')
 def delete_post():
     user_id = request.args.get('userId')
     post_id = request.args.get('postId')
@@ -89,7 +85,7 @@ def delete_post():
         return 'ERROR'
 
 
-@app.route('/getPosts')
+@app.route('/api/getPosts')
 def get_posts():
     user_id = request.args.get('userId')
 
