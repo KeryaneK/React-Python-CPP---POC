@@ -14,7 +14,7 @@ function App() {
 
   return (
     <>
-      {user.name != 'none' ? <Navbar/> : <></>}
+      {user.name != 'none' ? <Navbar setUser={setUser} /> : <></>}
 
       <Routes>
         {user.name == 'none' ?

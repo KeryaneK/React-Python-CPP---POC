@@ -1,7 +1,14 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 
-const Navbar = () => {
+interface props {
+  setUser: React.Dispatch<React.SetStateAction<{
+    name: string;
+    id: number;
+}>>
+}
+
+const Navbar: React.FC<props> = ({setUser}) => {
   const [isMenuVisible, setIsMenuVisible] = useState(false);
 
   return (
@@ -15,6 +22,7 @@ const Navbar = () => {
           <Link onClick={() => {setIsMenuVisible(false);}} to='/' className="text-lg font-medium hover:text-sky-500">Mainpage</Link>
           <Link onClick={() => {setIsMenuVisible(false);}} to='/userPosts' className="text-lg font-medium hover:text-sky-500">My posts</Link>
           <Link onClick={() => {setIsMenuVisible(false);}} to='/addPost' className="text-lg font-medium hover:text-sky-500">Add post</Link>
+          <button onClick={() => {setUser({name: 'none', id: 0})}} className="text-lg font-medium hover:text-sky-500">Logout</button>
         </div>
         <button onClick={() => {
           setIsMenuVisible(current => {return !current})
@@ -25,7 +33,7 @@ const Navbar = () => {
         <div className='border-b border-slate-900/10'></div>
         <Link onClick={() => {setIsMenuVisible(false);}} to='/' className="text-lg flex items-center justify-end px-2 py-1 border rounded-md border-slate-900/10 text-slate-700 font-medium">Mainpage</Link>
         <Link onClick={() => {setIsMenuVisible(false);}} to='/userPosts' className="text-lg flex items-center justify-end px-2 py-1 border rounded-md border-slate-900/10 text-slate-700 font-medium">My posts</Link>
-        <Link onClick={() => {setIsMenuVisible(false);}} to='/addPost' className="text-lg flex items-center justify-end px-2 py-1 border rounded-md border-slate-900/10 text-slate-700 font-medium">Add post</Link>
+        <button onClick={() => {setUser({name: 'none', id: 0})}} className="text-lg flex items-center justify-end px-2 py-1 border rounded-md border-slate-900/10 text-slate-700 font-medium">Logout</button>
       </div>
       }
 
