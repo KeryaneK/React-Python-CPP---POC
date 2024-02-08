@@ -33,6 +33,7 @@ const Navbar: React.FC<props> = ({setUser}) => {
         <div className='border-b border-slate-900/10'></div>
         <Link onClick={() => {setIsMenuVisible(false);}} to='/' className="text-lg flex items-center justify-end px-2 py-1 border rounded-md border-slate-900/10 text-slate-700 font-medium">Mainpage</Link>
         <Link onClick={() => {setIsMenuVisible(false);}} to='/userPosts' className="text-lg flex items-center justify-end px-2 py-1 border rounded-md border-slate-900/10 text-slate-700 font-medium">My posts</Link>
+        <Link onClick={() => {setIsMenuVisible(false);}} to='/addPost' className="text-lg flex items-center justify-end px-2 py-1 border rounded-md border-slate-900/10 text-slate-700 font-medium">Add post</Link>
         <button onClick={() => {setUser({name: 'none', id: 0})}} className="text-lg flex items-center justify-end px-2 py-1 border rounded-md border-slate-900/10 text-slate-700 font-medium">Logout</button>
       </div>
       }
