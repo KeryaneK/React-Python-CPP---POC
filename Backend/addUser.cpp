@@ -13,60 +13,80 @@ USER_EXISTS
 ERROR
 */
 
-bool usernameExists(sqlite3 *db, const std::string& login) {
-    std::string sqlStatement = "SELECT COUNT(*) FROM users WHERE login = '" + login + "';";
-    int result;
-    
-    char *errMsg = nullptr;
-    int rc = sqlite3_exec(db, sqlStatement.c_str(), [](void *data, int argc, char **argv, char **azColName) {
-        int *result = static_cast<int*>(data);
-        *result = atoi(argv[0]); // Extract count from the result
-        return SQLITE_OK;
-    }, &result, &errMsg);
+class UserManager {
+private:
+    sqlite3* db;
 
-    if (rc != SQLITE_OK) {
-        sqlite3_free(errMsg);
-        return false;
+public:
+    UserManager() : db(nullptr) {}
+
+    ~UserManager() {
+        if (db)
+            sqlite3_close(db);
     }
 
-    return result > 0;
-}
-
-void addUser(sqlite3 *db, const std::string& login, const std::string& password) {
-    if (usernameExists(db, login)) {
-        std::cout << "USER_EXISTS";
-        return;
+    bool openDatabase(const char* dbName) {
+        int rc = sqlite3_open(dbName, &db);
+        if (rc != SQLITE_OK) {
+            std::cout << "ERROR";
+            return false;
+        }
+        return true;
     }
 
-    char *errMsg = 0;
-    std::string sqlStatement = "INSERT INTO users (login, password) VALUES ('" + login + "', '" + password + "');";
+    bool usernameExists(const std::string& login) {
+        std::string sqlStatement = "SELECT COUNT(*) FROM users WHERE login = '" + login + "';";
+        int result;
 
-    int rc = sqlite3_exec(db, sqlStatement.c_str(), nullptr, 0, &errMsg);
-    if (rc != SQLITE_OK) {
-        std::cout << "ERROR";
-        sqlite3_free(errMsg);
-    } else {
-        std::cout << "OK";
+        char* errMsg = nullptr;
+        int rc = sqlite3_exec(db, sqlStatement.c_str(), [](void* data, int argc, char** argv, char** azColName) {
+            int* result = static_cast<int*>(data);
+            *result = atoi(argv[0]); // Extract count from the result
+            return SQLITE_OK;
+        }, &result, &errMsg);
+
+        if (rc != SQLITE_OK) {
+            sqlite3_free(errMsg);
+            return false;
+        }
+
+        return result > 0;
     }
-}
 
-int main(int argc, char *argv[]) {
-    std::string login = argv[1];
-    std::string password = argv[2];
+    void addUser(const std::string& login, const std::string& password) {
+        if (usernameExists(login)) {
+            std::cout << "USER_EXISTS";
+            return;
+        }
 
-    sqlite3 *db;
-    char *errMsg = 0;
-    int rc = sqlite3_open("database.db", &db);
-    if (rc) {
-        std::cout << "ERROR";
+        char* errMsg = nullptr;
+        std::string sqlStatement = "INSERT INTO users (login, password) VALUES ('" + login + "', '" + password + "');";
+
+        int rc = sqlite3_exec(db, sqlStatement.c_str(), nullptr, 0, &errMsg);
+        if (rc != SQLITE_OK) {
+            std::cout << "ERROR";
+            sqlite3_free(errMsg);
+        } else {
+            std::cout << "OK";
+        }
+    }
+};
+
+int main(int argc, char* argv[]) {
+    if (argc < 3) {
+        std::cerr << "ERROR";
         return 1;
     }
 
-    // Example usage: add a user only if the username doesn't already exist
-    addUser(db, login, password);
+    std::string login = argv[1];
+    std::string password = argv[2];
 
-    // Close database
-    sqlite3_close(db);
+    UserManager userManager;
+    if (!userManager.openDatabase("database.db")) {
+        return 1;
+    }
+
+    userManager.addUser(login, password);
 
     return 0;
 }

@@ -12,43 +12,64 @@ OK
 ERROR
 */
 
-bool deletePost(sqlite3 *db, const std::string& user_id, const std::string& post_id) {
-    std::string sqlStatement = "DELETE FROM posts WHERE user_id = " + user_id + " AND id = " + post_id + ";";
+class PostManager {
+public:
+    PostManager() : db(nullptr) {}
 
-    char *errMsg = nullptr;
-    int rc = sqlite3_exec(db, sqlStatement.c_str(), nullptr, nullptr, &errMsg);
-    if (rc != SQLITE_OK) {
-        sqlite3_free(errMsg);
-        return false;
+    ~PostManager() {
+        if (db)
+            sqlite3_close(db);
     }
 
-    if (sqlite3_changes(db) == 0) {
-        return false;
+    bool openDatabase(const char* dbName) {
+        int rc = sqlite3_open(dbName, &db);
+        if (rc != SQLITE_OK) {
+            std::cout << "ERROR";
+            return false;
+        }
+        return true;
     }
 
-    return true; // OK
-}
+    bool deletePost(const std::string& user_id, const std::string& post_id) {
+        std::string sqlStatement = "DELETE FROM posts WHERE user_id = " + user_id + " AND id = " + post_id + ";";
 
-int main(int argc, char *argv[]) {
-    std::string user_id = argv[1];
-    std::string post_id = argv[2];
+        char* errMsg = nullptr;
+        int rc = sqlite3_exec(db, sqlStatement.c_str(), nullptr, nullptr, &errMsg);
+        if (rc != SQLITE_OK) {
+            sqlite3_free(errMsg);
+            return false;
+        }
 
-    sqlite3 *db;
-    char *errMsg = nullptr;
-    int rc = sqlite3_open("database.db", &db);
-    if (rc) {
-        std::cout << "ERROR";
+        if (sqlite3_changes(db) == 0) {
+            return false;
+        }
+
+        return true; // OK
+    }
+
+private:
+    sqlite3* db;
+};
+
+int main(int argc, char* argv[]) {
+    if (argc < 3) {
+        std::cerr << "ERROR";
         return 1;
     }
 
-    // Call deletePost function
-    if (deletePost(db, user_id, post_id)) {
+    std::string user_id = argv[1];
+    std::string post_id = argv[2];
+
+    PostManager postManager;
+    if (!postManager.openDatabase("database.db")) {
+        return 1;
+    }
+
+    if (postManager.deletePost(user_id, post_id)) {
         std::cout << "OK";
     } else {
         std::cout << "ERROR";
     }
-
-    sqlite3_close(db);
 
     return 0;
 }
