@@ -19,7 +19,8 @@ int main() {
         "CREATE TABLE IF NOT EXISTS users ("
         "id INTEGER PRIMARY KEY AUTOINCREMENT,"
         "login TEXT NOT NULL,"
-        "password TEXT NOT NULL);";
+        "password TEXT NOT NULL,"
+        "isAdmin INTEGER DEFAULT 0);";
     
     rc = sqlite3_exec(db, createUsersTableSQL, nullptr, 0, &errMsg);
     if (rc != SQLITE_OK) {

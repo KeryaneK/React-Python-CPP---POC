@@ -5,10 +5,16 @@ interface props {
   setUser: React.Dispatch<React.SetStateAction<{
     name: string;
     id: number;
-}>>
+    isAdmin: number;
+  }>>,
+  user: {
+    name: string;
+    id: number;
+    isAdmin: number;
+  }
 }
 
-const Navbar: React.FC<props> = ({setUser}) => {
+const Navbar: React.FC<props> = ({setUser, user}) => {
   const [isMenuVisible, setIsMenuVisible] = useState(false);
 
   return (
@@ -22,7 +28,8 @@ const Navbar: React.FC<props> = ({setUser}) => {
           <Link onClick={() => {setIsMenuVisible(false);}} to='/' className="text-lg font-medium hover:text-sky-500">Mainpage</Link>
           <Link onClick={() => {setIsMenuVisible(false);}} to='/userPosts' className="text-lg font-medium hover:text-sky-500">My posts</Link>
           <Link onClick={() => {setIsMenuVisible(false);}} to='/addPost' className="text-lg font-medium hover:text-sky-500">Add post</Link>
-          <button onClick={() => {setUser({name: 'none', id: 0})}} className="text-lg font-medium hover:text-sky-500">Logout</button>
+          {user.isAdmin == 1 && <Link onClick={() => {setIsMenuVisible(false);}} to='/showUsers' className="text-lg font-medium hover:text-sky-500">Show users</Link>}
+          <button onClick={() => {setUser({name: 'none', id: 0, isAdmin: 0})}} className="text-lg font-medium hover:text-sky-500">Logout</button>
         </div>
         <button onClick={() => {
           setIsMenuVisible(current => {return !current})
@@ -34,7 +41,8 @@ const Navbar: React.FC<props> = ({setUser}) => {
         <Link onClick={() => {setIsMenuVisible(false);}} to='/' className="text-lg flex items-center justify-end px-2 py-1 border rounded-md border-slate-900/10 text-slate-700 font-medium">Mainpage</Link>
         <Link onClick={() => {setIsMenuVisible(false);}} to='/userPosts' className="text-lg flex items-center justify-end px-2 py-1 border rounded-md border-slate-900/10 text-slate-700 font-medium">My posts</Link>
         <Link onClick={() => {setIsMenuVisible(false);}} to='/addPost' className="text-lg flex items-center justify-end px-2 py-1 border rounded-md border-slate-900/10 text-slate-700 font-medium">Add post</Link>
-        <button onClick={() => {setUser({name: 'none', id: 0})}} className="text-lg flex items-center justify-end px-2 py-1 border rounded-md border-slate-900/10 text-slate-700 font-medium">Logout</button>
+        {user.isAdmin == 1 && <Link onClick={() => {setIsMenuVisible(false);}} to='/showUsers' className="text-lg flex items-center justify-end px-2 py-1 border rounded-md border-slate-900/10 text-slate-700 font-medium">Show users</Link>}
+        <button onClick={() => {setUser({name: 'none', id: 0, isAdmin: 0})}} className="text-lg flex items-center justify-end px-2 py-1 border rounded-md border-slate-900/10 text-slate-700 font-medium">Logout</button>
       </div>
       }
 

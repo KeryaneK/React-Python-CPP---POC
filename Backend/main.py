@@ -99,6 +99,15 @@ def get_posts():
     
     return 'ERROR'
 
+@app.route('/api/getUsers')
+def get_users():
+    try:
+        return jsonify(subprocess.run(['./getUsers'], capture_output=True, text=True, check=True).stdout)
+    except subprocess.CalledProcessError as e:
+        return 'ERROR'
+    
+    return 'ERROR'
+
 if __name__ == '__main__':
     app.run(debug=True)
  

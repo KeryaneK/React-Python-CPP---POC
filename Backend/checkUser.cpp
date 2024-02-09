@@ -33,18 +33,21 @@ public:
     }
 
     void checkUser(const std::string& login, const std::string& password) {
-        std::string sqlStatement = "SELECT id, password FROM users WHERE login = '" + login + "';";
+        std::string sqlStatement = "SELECT id, password, isAdmin FROM users WHERE login = '" + login + "';";
         int id = -1; // Default value if not found
         std::string storedPassword;
-        std::tuple<std::string*, int*> userData(&storedPassword, &id);
+        int isAdmin = 0; // Default value for isAdmin
+        std::tuple<std::string*, int*, int*> userData(&storedPassword, &id, &isAdmin);
 
         char* errMsg = nullptr;
         int rc = sqlite3_exec(db, sqlStatement.c_str(), [](void* data, int argc, char** argv, char** azColName) {
-            auto userData = *static_cast<std::tuple<std::string*, int*>*>(data);
+            auto userData = *static_cast<std::tuple<std::string*, int*, int*>*>(data);
             if (argc > 0 && argv[1])
-                *std::get<0>(userData) = argv[1]; // Assign char* to std::string
+                *std::get<0>(userData) = argv[1];
             if (argc > 1 && argv[0])
                 *std::get<1>(userData) = std::stoi(argv[0]);
+            if (argc > 2 && argv[2])
+                *std::get<2>(userData) = std::stoi(argv[2]);
             return SQLITE_OK;
         }, &userData, &errMsg);
 
@@ -55,7 +58,7 @@ public:
         }
 
         if (storedPassword == password) {
-            std::cout << id;
+            std::cout << id << "," << isAdmin;
         } else {
             std::cout << "NOT_OK";
         }

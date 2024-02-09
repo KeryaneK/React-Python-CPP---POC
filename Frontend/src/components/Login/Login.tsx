@@ -5,6 +5,7 @@ interface props {
   setUser: React.Dispatch<React.SetStateAction<{
     name: string;
     id: number;
+    isAdmin: number;
   }>>
 }
 
@@ -37,7 +38,8 @@ const Login: React.FC<props> = ({ setUser }) => {
         setMessage('Wrong login and/or password.');
         return;
       }
-      setUser({name: login.current!.value, id: parseInt(data)});
+      const [id, isAdmin] = data.split(',');
+      setUser({name: login.current!.value, id: parseInt(id), isAdmin: parseInt(isAdmin)});
       setMessage('');
     } catch (error) {
       setMessage('Error while connecting to the API.');
